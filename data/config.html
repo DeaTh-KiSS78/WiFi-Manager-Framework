@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurator WiFi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="png/wifi.png">
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Configurare WiFi</h1>
+
+        <button id="scanBtn">Scanează rețele</button>
+
+        <div id="networks"></div>
+
+        <div id="connectSection" style="display:none;">
+            <h2>Conectare la rețea</h2>
+            <p id="selectedSSID"></p>
+
+            <input type="password" id="wifiPass" placeholder="Parolă WiFi">
+            <button id="connectBtn">Conectează</button>
+        </div>
+
+        <div id="statusBox">
+            <h2>Status conexiune</h2>
+            <p id="statusText">Verific...</p>
+        </div>
+
+        <hr>
+
+        <div id="clientsBox">
+            <h2>Clienți conectați la AP</h2>
+            <button onclick="loadClients()">Actualizează lista</button>
+
+            <table id="clientsTable" border="1" style="margin-top:10px; width:100%; text-align:left;">
+                <tr>
+                    <th>MAC</th>
+                    <th>IP</th>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Buton Home -->
+        <button class="btn" onclick="location.href='index.html'">&#127968; Home</button>
+
+        <!-- Buton Reset WiFi -->
+        <button class="btn danger" onclick="clearWiFi()" style="margin-top:20px; background:#c62828; color:white;">
+            🧹 Reset WiFi
+        </button>
+
+        <p id="clearMsg" style="margin-top:10px; font-weight:bold;"></p>
+
+    </div>
+
+    <script src="js/script.js"></script>
+
+    <!-- reset esp -->
+    <button style="width:42px;" class="reset-sticky" onclick="resetAndReload()">&#128260; RST</button>
+    <!-- end reset esp -->
+
+    <script>
+        function clearWiFi() {
+            if (!confirm("Sigur vrei să ștergi credențialele WiFi?")) return;
+
+            fetch("/clearwifi")
+                .then(r => r.text())
+                .then(t => {
+                    document.getElementById("clearMsg").innerText = "Credențiale WiFi șterse!";
+                })
+                .catch(() => {
+                    document.getElementById("clearMsg").innerText = "Eroare la ștergere!";
+                });
+        }
+    </script>
+
+</body>
+</html>
