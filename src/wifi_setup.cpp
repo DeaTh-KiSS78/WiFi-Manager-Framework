@@ -61,19 +61,16 @@ void handleScan(AsyncWebServerRequest *request) {
     int n = WiFi.scanComplete();
 
     if (n == WIFI_SCAN_RUNNING) {
-        // Scanarea încă rulează
         request->send(200, "application/json", "[]");
         return;
     }
 
     if (n == WIFI_SCAN_FAILED) {
-        // Pornim o nouă scanare
         WiFi.scanNetworks(true);
         request->send(200, "application/json", "[]");
         return;
     }
 
-    // Scanare finalizată → construim lista
     String json = "[";
     for (int i = 0; i < n; i++) {
         json += "\"" + WiFi.SSID(i) + "\"";
@@ -81,10 +78,7 @@ void handleScan(AsyncWebServerRequest *request) {
     }
     json += "]";
 
-    // Curățăm rezultatele pentru următoarea scanare
     WiFi.scanDelete();
-
-    // Pornim o nouă scanare pentru data viitoare
     WiFi.scanNetworks(true);
 
     request->send(200, "application/json", json);
@@ -155,7 +149,8 @@ void handleClients(AsyncWebServerRequest *request) {
 
 void wifiManagerSetup() {
     Serial.println("=== WiFi Manager Init ===");
-WiFi.scanNetworks(true); // pornește scanarea în background
+
+    WiFi.scanNetworks(true);
 
     enableAP();
 
